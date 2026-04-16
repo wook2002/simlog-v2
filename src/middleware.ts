@@ -24,27 +24,19 @@ export async function middleware(request: NextRequest) {
     }
   )
 
-  // 1. DB에서 마스터 스위치(is_private) 상태를 가져옵니다.
-  const { data: config } = await supabase
-    .from('site_config')
-    .select('value')
-    .eq('key', 'is_private')
-    .single()
-
+  const { data: config } = await supabase.from('site_config').select('value').eq('key', 'is_private').single()
   const { data: { user } } = await supabase.auth.getUser()
 
-  // 2. [철통 보안] 글쓰기(/write) 관련 페이지는 스위치 상관없이 무조건 로그인 체크!
-  if (request.nextUrl.pathname.startsWith('/write')) {
-    if (!user) {
-      return NextResponse.redirect(new URL('/login', request.url))
-    }
-  }
+  // 로그인 안 된 사람이 보호된 페이지(글쓰기 등)나 잠긴 홈에 가려고 할 때
+  const isProtectedRoute = request.nextUrl.pathname.startsWith('/write')
+  const isSiteLocked = config?.value === true
 
-  // 3. 그 외 페이지(홈 등)는 마스터 스위치가 '잠금(true)'일 때만 로그인 체크
-  if (config?.value === true) {
-    if (!user && request.nextUrl.pathname !== '/login') {
-      return NextResponse.redirect(new URL('/login', request.url))
-    }
+  if (!user && (isProtectedRoute || (isSiteLocked && request.nextUrl.pathname !== '/login'))) {
+    // [핵심] 가려던 주소를 'next'라는 이름으로 들고 로그인 페이지로 갑니다.
+    const redirectUrl = request.nextUrl.clone()
+    redirectUrl.pathname = '/login'
+    redirectUrl.searchParams.set('next', request.nextUrl.pathname) 
+    return NextResponse.redirect(redirectUrl)
   }
 
   return response
