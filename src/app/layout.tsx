@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { SITE_CONFIG } from "@/constants/siteConfig";
+import MobileNav from "@/components/MobileNav";
 
 export const metadata: Metadata = {
   title: SITE_CONFIG.title,
@@ -14,8 +15,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ko">
-      <body className="bg-white text-slate-900 antialiased font-sans">
+      <body className="bg-white text-slate-900 antialiased font-sans overflow-x-hidden">
         <div className="mx-auto max-w-5xl px-6 min-h-screen flex flex-col">
+          {/* 헤더 섹션 */}
           <header className="flex items-center justify-between py-10 border-b border-slate-100">
             <h1 className="text-2xl font-black tracking-tighter cursor-pointer">
               {SITE_CONFIG.title}
@@ -25,13 +27,18 @@ export default function RootLayout({
             </nav>
           </header>
 
-          <main className="flex-grow py-12">
+          {/* 메인 콘텐츠 영역 */}
+          <main className="flex-grow py-12 relative">
             {children}
           </main>
 
+          {/* 푸터 섹션 */}
           <footer className="py-8 border-t border-slate-100 text-center text-xs text-slate-400">
-            © {new Date().getFullYear()} {SITE_CONFIG.author}. Built with AI.
+            © {new Date().getFullYear()} {SITE_CONFIG.author}. Built for our memories.
           </footer>
+
+          {/* 모바일 전용 플로팅 버튼 */}
+          <MobileNav />
         </div>
       </body>
     </html>
