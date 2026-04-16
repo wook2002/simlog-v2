@@ -27,15 +27,22 @@ export async function middleware(request: NextRequest) {
   const { data: config } = await supabase.from('site_config').select('value').eq('key', 'is_private').single()
   const { data: { user } } = await supabase.auth.getUser()
 
-  // 로그인 안 된 사람이 보호된 페이지(글쓰기 등)나 잠긴 홈에 가려고 할 때
-  const isProtectedRoute = request.nextUrl.pathname.startsWith('/write')
+  const { pathname, searchParams } = request.nextUrl
+
+  // [상황 3 대응] 이미 로그인했는데 로그인 페이지 가려고 하면?
+  if (user && pathname === '/login') {
+    return NextResponse.redirect(new URL('/', request.url)) // 그냥 홈으로!
+  }
+
+  // [상황 1, 2 대응] 보호된 구역 접근 체크
+  const isProtectedRoute = pathname.startsWith('/write') || pathname.startsWith('/admin') // 나중에 관리자 페이지 추가 대비
   const isSiteLocked = config?.value === true
 
-  if (!user && (isProtectedRoute || (isSiteLocked && request.nextUrl.pathname !== '/login'))) {
-    // [핵심] 가려던 주소를 'next'라는 이름으로 들고 로그인 페이지로 갑니다.
+  if (!user && (isProtectedRoute || (isSiteLocked && pathname !== '/login'))) {
     const redirectUrl = request.nextUrl.clone()
     redirectUrl.pathname = '/login'
-    redirectUrl.searchParams.set('next', request.nextUrl.pathname) 
+    // 가려던 곳이 어디든 'next'라는 이름으로 기억함!
+    redirectUrl.searchParams.set('next', pathname + searchParams.toString()) 
     return NextResponse.redirect(redirectUrl)
   }
 
