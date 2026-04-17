@@ -29,41 +29,15 @@ export default function HomePage() {
   };
 
   return (
-    // 1. 너비를 max-w-7xl(약 1280px)로 확 늘리고, 양옆 여백을 헤더와 맞춤
     <div className="max-w-7xl mx-auto py-10 px-6 md:px-12 pb-24">
       
-      {/* 2. PC(lg 기준)에서 4칸으로 나누고 간격을 시원하게 벌림 */}
       <div className="flex flex-col lg:grid lg:grid-cols-4 gap-12 lg:gap-20">
         
         {/* ==========================================
-            [오른쪽 영역] 프로필 (1칸 차지)
+            [왼쪽 영역] 게시물 목록 (3칸 차지)
+            💡 순서 변경: 코드를 위로 올려서 모바일에서 먼저 보이게 합니다!
             ========================================== */}
-        <aside className="lg:col-span-1 order-1 lg:order-2">
-          <div className="sticky top-10">
-            <div className="flex flex-row lg:flex-col items-center lg:items-start gap-4 lg:gap-6 border-b-2 border-slate-50 lg:border-none pb-6 lg:pb-0">
-              <div className="w-14 h-14 lg:w-16 lg:h-16 bg-slate-900 text-white rounded-2xl flex items-center justify-center text-xl lg:text-2xl font-black shadow-md shrink-0">
-                재
-              </div>
-              <div>
-                <h3 className="text-lg lg:text-xl font-black text-slate-900">재욱</h3>
-                <p className="text-xs lg:text-sm font-medium text-slate-500 mt-0.5">AI-Native 블로그</p>
-                <div className="lg:hidden mt-1">
-                  <a href="#" className="text-xs font-bold text-slate-400 hover:text-black">Github ↗</a>
-                </div>
-              </div>
-            </div>
-
-            <div className="hidden lg:block space-y-2 pt-6 mt-6 border-t-2 border-slate-50">
-              <p className="text-xs font-bold text-slate-400 tracking-widest uppercase">Links</p>
-              <a href="#" className="block text-sm font-bold text-slate-600 hover:text-black transition-colors">Github ↗</a>
-            </div>
-          </div>
-        </aside>
-
-        {/* ==========================================
-            [왼쪽 영역] 게시물 목록 (3칸 차지 - 압도적 넓이!)
-            ========================================== */}
-        <div className="lg:col-span-3 order-2 lg:order-1 pt-2 lg:pt-0">
+        <div className="lg:col-span-3 pt-2 lg:pt-0">
           
           <div className="mb-8 pb-4 border-b-2 border-slate-100 flex justify-between items-end">
             <h2 className="text-sm font-black text-slate-900 tracking-widest uppercase">
@@ -81,7 +55,7 @@ export default function HomePage() {
               아직 기록된 모먼트가 없습니다. 첫 기록을 남겨보세요! 🍃
             </div>
           ) : (
-             <div className="space-y-20"> {/* 글 사이 간격도 더 시원하게 */}
+             <div className="space-y-20"> 
               {posts.map((post) => (
                 <article key={post.id} className="space-y-4 group">
                   <div className="flex items-center space-x-3 text-xs font-bold uppercase tracking-widest text-slate-400">
@@ -112,6 +86,32 @@ export default function HomePage() {
             </div>
           )}
         </div>
+
+        {/* ==========================================
+            [오른쪽 영역] 프로필 (1칸 차지)
+            💡 순서 변경: 코드를 아래로 내려서 모바일에선 맨 밑으로, PC에선 자연스럽게 오른쪽으로!
+            ========================================== */}
+        <aside className="lg:col-span-1">
+          <div className="sticky top-10">
+            <div className="flex flex-row lg:flex-col items-center lg:items-start gap-4 lg:gap-6 border-t-2 lg:border-t-0 border-slate-100 pt-10 lg:pt-0 pb-6 lg:pb-0 mt-10 lg:mt-0">
+              <div className="w-14 h-14 lg:w-16 lg:h-16 bg-slate-900 text-white rounded-2xl flex items-center justify-center text-xl lg:text-2xl font-black shadow-md shrink-0">
+                재
+              </div>
+              <div>
+                <h3 className="text-lg lg:text-xl font-black text-slate-900">재욱</h3>
+                <p className="text-xs lg:text-sm font-medium text-slate-500 mt-0.5">AI-Native 블로그</p>
+                <div className="lg:hidden mt-1">
+                  <a href="#" className="text-xs font-bold text-slate-400 hover:text-black">Github ↗</a>
+                </div>
+              </div>
+            </div>
+
+            <div className="hidden lg:block space-y-2 pt-6 mt-6 border-t-2 border-slate-50">
+              <p className="text-xs font-bold text-slate-400 tracking-widest uppercase">Links</p>
+              <a href="#" className="block text-sm font-bold text-slate-600 hover:text-black transition-colors">Github ↗</a>
+            </div>
+          </div>
+        </aside>
 
       </div>
 
