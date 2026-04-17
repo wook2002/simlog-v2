@@ -29,8 +29,9 @@ export default function HomePage() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto py-10 px-6 pb-24">
-      <div className="flex flex-col md:grid md:grid-cols-3 gap-10 md:gap-12">
+    <div className="max-w-6xl mx-auto py-10 px-6 pb-24">
+      {/* 간격(gap)도 md:gap-20으로 팍 늘려서 숨통을 트여줍니다 */}
+      <div className="flex flex-col md:grid md:grid-cols-3 gap-10 md:gap-20">
         
         {/* ==========================================
             [오른쪽 영역] 프로필
