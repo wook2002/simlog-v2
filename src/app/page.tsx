@@ -1,32 +1,83 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabase";
 import Link from "next/link";
 
 export default function LandingPage() {
+  const [latestPost, setLatestPost] = useState<any>(null);
+
+  useEffect(() => {
+    // 가장 최신 글 딱 하나만 가져오기
+    const fetchLatest = async () => {
+      const { data } = await supabase
+        .from("posts")
+        .select("*")
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .single();
+      if (data) setLatestPost(data);
+    };
+    fetchLatest();
+  }, []);
+
   return (
-    // 화면 중앙에 떡하니 배치되도록 min-h-[80vh] 적용
-    <div className="flex flex-col items-center justify-center min-h-[80vh] px-6 text-center space-y-12">
+    <div className="max-w-4xl mx-auto px-6 py-20 space-y-24">
       
-      <div className="space-y-4 cursor-default">
-        {/* 거대한 타이틀 */}
-        <h1 className="text-7xl md:text-9xl font-black tracking-tighter italic uppercase text-slate-900 drop-shadow-sm transition-all hover:scale-105 duration-500">
-          SIMLOG<span className="text-blue-500">.</span>
-        </h1>
-        {/* 서브 타이틀 */}
-        <p className="text-sm md:text-base font-black uppercase tracking-[0.4em] text-slate-400">
-          AI-Native Archive of Moments
-        </p>
-      </div>
+      {/* Section 1: Hero (압도적인 타이틀과 소개) */}
+      <section className="space-y-8">
+        <div className="space-y-2">
+          <h1 className="text-8xl md:text-[12rem] font-black tracking-tighter italic leading-none text-slate-900">
+            SIMLOG<span className="text-blue-600">.</span>
+          </h1>
+          <p className="text-lg md:text-2xl font-bold text-slate-400 max-w-lg leading-tight uppercase tracking-tighter">
+            Archive of my moments, <br/>captured with AI.
+          </p>
+        </div>
+        
+        {/* 이동 버튼을 더 힙하게 변경 */}
+        <Link 
+          href="/log" 
+          className="inline-flex items-center space-x-4 group"
+        >
+          <div className="bg-black text-white px-8 py-4 rounded-full font-black text-xl group-hover:bg-blue-600 transition-all shadow-xl">
+            ENTER THE LOG ➔
+          </div>
+        </Link>
+      </section>
 
-      {/* 안방(게시판)으로 들어가는 힙한 버튼 */}
-      <Link 
-        href="/log" 
-        className="group flex items-center space-x-3 bg-slate-900 text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-blue-600 transition-all hover:scale-105 active:scale-95 shadow-2xl"
-      >
-        <span>ENTER THE LOG</span>
-        <span className="group-hover:translate-x-1.5 transition-transform duration-300">
-          ➔
-        </span>
-      </Link>
+      {/* Section 2: Featured (최신 글 맛보기) */}
+      {latestPost && (
+        <section className="space-y-6 pt-10 border-t-4 border-slate-900">
+          <div className="flex justify-between items-end">
+            <h2 className="text-xs font-black uppercase tracking-[0.3em] text-slate-400">Featured Moment</h2>
+            <Link href="/log" className="text-xs font-black uppercase border-b-2 border-black pb-1">View All</Link>
+          </div>
+          
+          <Link href="/log" className="group block space-y-6">
+            <div className="aspect-[16/9] w-full rounded-3xl overflow-hidden bg-slate-100 shadow-2xl">
+              <img 
+                src={latestPost.image_url} 
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
+                alt="Latest"
+              />
+            </div>
+            <div className="space-y-2">
+              <h3 className="text-4xl md:text-6xl font-black tracking-tighter leading-none group-hover:text-blue-600 transition-colors">
+                {latestPost.title}
+              </h3>
+              <p className="text-xl text-slate-500 font-medium line-clamp-2 max-w-2xl">
+                {latestPost.description}
+              </p>
+            </div>
+          </Link>
+        </section>
+      )}
 
+      {/* Section 3: Simple Footer */}
+      <footer className="pt-20 text-xs font-bold text-slate-300 uppercase tracking-widest text-center">
+        © 2026 Simlog. Built with Passion.
+      </footer>
     </div>
   );
 }
