@@ -1,45 +1,34 @@
 import type { Metadata } from "next";
+import { Inter } from "next/font/google";
 import "./globals.css";
-import { SITE_CONFIG } from "@/constants/siteConfig";
-import MobileNav from "@/components/MobileNav";
+// 💡 방금 만든 네비게이션 부품을 불러옵니다!
+import Navbar from "@/components/Navbar";
+
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: SITE_CONFIG.title,
-  description: SITE_CONFIG.description,
+  title: "SIMLOG V3",
+  description: "Archive of my moments, captured with AI.",
 };
 
 export default function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
   return (
     <html lang="ko">
-      <body className="bg-white text-slate-900 antialiased font-sans overflow-x-hidden">
-        <div className="mx-auto max-w-5xl px-6 min-h-screen flex flex-col">
-          {/* 헤더 섹션 */}
-          <header className="flex items-center justify-between py-10 border-b border-slate-100">
-            <h1 className="text-2xl font-black tracking-tighter cursor-pointer">
-              {SITE_CONFIG.title}
-            </h1>
-            <nav className="space-x-6 text-sm font-bold text-slate-500">
-              <a href="/" className="hover:text-black transition uppercase tracking-widest">Home</a>
-            </nav>
-          </header>
+      {/* 배경색을 여기서 전체적으로 깔아줍니다 */}
+      <body className={`${inter.className} bg-slate-50/50 antialiased`}>
+        
+        {/* 🚀 바로 여기에 네비바를 고정합니다. 이제 어느 방을 가든 이게 맨 위에 뜹니다! */}
+        <Navbar />
 
-          {/* 메인 콘텐츠 영역 */}
-          <main className="flex-grow py-12 relative">
-            {children}
-          </main>
+        {/* 이 {children} 자리에 page.tsx 내용들이 쏙쏙 들어옵니다 */}
+        <main>
+          {children}
+        </main>
 
-          {/* 푸터 섹션 */}
-          <footer className="py-8 border-t border-slate-100 text-center text-xs text-slate-400">
-            © {new Date().getFullYear()} {SITE_CONFIG.author}. Built for our memories.
-          </footer>
-
-          {/* 모바일 전용 플로팅 버튼 */}
-          <MobileNav />
-        </div>
       </body>
     </html>
   );
