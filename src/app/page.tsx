@@ -32,8 +32,8 @@ export default function HomeDashboard() {
             SIMLOG Archive<span className="text-blue-600">.</span>
           </h1>
           <p className="text-slate-500 font-medium leading-relaxed">
-            재욱의 일상과 기술적 시도들을 기록하는 공간입니다. <br />
-            지극히 개인적이고도 실험적인 아카이브를 즐겨보세요.
+            블로그 블로그 블로그 만듦 만듦<br />
+            테스트 테스트 테스트 하는 중 중 
           </p>
         </header>
 
