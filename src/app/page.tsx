@@ -29,7 +29,7 @@ export default function HomeDashboard() {
         <header className="mb-24">
           <h1 className="text-4xl font-black tracking-tighter text-slate-900 mb-4">
             웰컴<br />
-            SIMLOG 테스트<span className="text-blue-600">.</span>
+            1234ㅁㄴㄹㅇadf 테스트<span className="text-blue-600">.</span>
           </h1>
           <p className="text-slate-500 font-medium leading-relaxed">
             블로그?  !@#$%&* 만듦 만듦<br />
