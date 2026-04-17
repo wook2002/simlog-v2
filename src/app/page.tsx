@@ -32,8 +32,8 @@ export default function HomeDashboard() {
             SIMLOG 테스트<span className="text-blue-600">.</span>
           </h1>
           <p className="text-slate-500 font-medium leading-relaxed">
-            블로그 블로그 블로그 만듦 만듦<br />
-            테스트 테스트 테스트 하는 중 중 
+            블로그?  !@#$%&* 만듦 만듦<br />
+            테스트 ㈜ ☎ ㏂ abc 테스트 하는 1336 중 따라라
           </p>
         </header>
 
