@@ -4,133 +4,89 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import Link from "next/link";
 
-export default function HomePageV3() {
+export default function HomeDashboard() {
   const [posts, setPosts] = useState<any[]>([]);
+  const [notices, setNotices] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchPosts();
+    const fetchData = async () => {
+      // 게시판 글 최근 3개, 공지사항 최근 3개만 가져오기
+      const { data: boardData } = await supabase.from("posts").select("*").order("created_at", { ascending: false }).limit(3);
+      // 나중에 공지 테이블 생기면 여기서 fetch
+      setPosts(boardData || []);
+      setNotices([{ id: 1, title: "SIMLOG V3 가동 시작", date: "2026.04.17" }]); 
+      setLoading(false);
+    };
+    fetchData();
   }, []);
 
-  const fetchPosts = async () => {
-    try {
-      const { data, error } = await supabase
-        .from("posts")
-        .select("*")
-        .order("created_at", { ascending: false });
-
-      if (error) throw error;
-      setPosts(data || []);
-    } catch (error: any) {
-      console.error("데이터 불러오기 실패:", error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
-    // 배경은 눈이 편안한 Soft Zinc 톤 유지
     <div className="min-h-screen bg-slate-50/50 antialiased">
-      {/* 💡 핵심: max-w-3xl(약 768px)로 너비를 제한하여 1단으로 구성. 
-          어떤 화면에서도 가운데 정렬되어 시선이 분산되지 않습니다.
-      */}
-      <div className="max-w-3xl mx-auto py-16 px-6 pb-32">
+      <div className="max-w-3xl mx-auto py-20 px-6 pb-32">
         
-        {/* ==========================================
-            [상단 헤더 영역]
-            ========================================== */}
-        <div className="mb-16 pb-4 border-b border-slate-200 flex justify-between items-end">
-          <h2 className="text-sm font-black text-slate-900 tracking-widest uppercase">
-            Latest Moments
-          </h2>
-          <span className="text-xs font-bold text-slate-400">{posts.length} Posts</span>
-        </div>
+        {/* 1. 인트로 세션 */}
+        <header className="mb-24">
+          <h1 className="text-4xl font-black tracking-tighter text-slate-900 mb-4">
+            Welcome to <br />
+            SIMLOG Archive<span className="text-blue-600">.</span>
+          </h1>
+          <p className="text-slate-500 font-medium leading-relaxed">
+            재욱의 일상과 기술적 시도들을 기록하는 공간입니다. <br />
+            지극히 개인적이고도 실험적인 아카이브를 즐겨보세요.
+          </p>
+        </header>
 
-        {/* ==========================================
-            [중앙 게시물 목록 영역]
-            ========================================== */}
-        <main>
-          {loading ? (
-            <div className="py-20 text-center font-bold text-slate-400 animate-pulse">
-              모먼트를 불러오는 중입니다... ⏳
+        <div className="space-y-24">
+          {/* 2. 공지사항 섹션 (고전적 리스트 스타일) */}
+          <section>
+            <div className="flex items-center justify-between mb-8 pb-2 border-b-2 border-slate-900">
+              <h2 className="text-sm font-black uppercase tracking-widest">Notice</h2>
+              <Link href="/notice" className="text-[10px] font-bold text-slate-400 hover:text-black transition-colors uppercase">View All ➔</Link>
             </div>
-          ) : posts.length === 0 ? (
-            <div className="py-20 text-center font-bold text-slate-400">
-              아직 기록된 모먼트가 없습니다. <br />첫 기록을 남겨보세요! 🍃
+            <div className="divide-y divide-slate-100">
+              {notices.map((n) => (
+                <Link href="/notice" key={n.id} className="py-4 flex justify-between items-center group">
+                  <span className="font-bold text-slate-700 group-hover:text-blue-600 transition-colors">{n.title}</span>
+                  <span className="text-xs font-bold text-slate-300 tabular-nums">{n.date}</span>
+                </Link>
+              ))}
             </div>
-          ) : (
-            <div className="space-y-32"> 
+          </section>
+
+          {/* 3. 최근 게시물 섹션 (비주얼 스타일) */}
+          <section>
+            <div className="flex items-center justify-between mb-10 pb-2 border-b-2 border-slate-900">
+              <h2 className="text-sm font-black uppercase tracking-widest">Recent Moments</h2>
+              <Link href="/log" className="text-[10px] font-bold text-slate-400 hover:text-black transition-colors uppercase">View All ➔</Link>
+            </div>
+            <div className="space-y-20">
               {posts.map((post) => (
-                <article key={post.id} className="group relative">
-                  <div className="space-y-6">
-                    {/* 메타 정보 (카테고리 & 날짜) */}
-                    <div className="flex items-center space-x-3 text-[11px] font-black uppercase tracking-[0.2em] text-slate-400">
-                      <span className="text-blue-600">{post.category || "MOMENT"}</span>
-                      <span>·</span>
-                      <span className="tabular-nums">{post.date}</span>
-                    </div>
-                    
-                    {/* 제목 & 본문 */}
-                    <div className="space-y-4">
-                      <h2 className="text-3xl md:text-4xl font-extrabold tracking-tighter text-slate-900 leading-tight">
-                        {post.title}
-                      </h2>
-                      <p className="text-slate-600 font-medium whitespace-pre-wrap leading-relaxed text-[17px]">
-                        {post.description}
-                      </p>
-                    </div>
-
-                    {/* 이미지 영역 */}
+                <article key={post.id} className="group">
+                  <div className="space-y-4">
+                    <div className="text-[10px] font-black text-blue-500 uppercase tracking-widest">{post.category || "Moment"}</div>
+                    <h3 className="text-2xl font-black text-slate-900 group-hover:text-blue-600 transition-colors">{post.title}</h3>
                     {post.image_url && (
-                      <div className="w-full mt-8 rounded-[32px] overflow-hidden bg-white border border-slate-100 shadow-2xl shadow-slate-200/40">
-                        <img 
-                          src={post.image_url} 
-                          alt={post.title} 
-                          className="w-full h-auto object-cover max-h-[800px] group-hover:scale-[1.02] transition-transform duration-1000 ease-in-out" 
-                        />
+                      <div className="rounded-3xl overflow-hidden border border-slate-100 shadow-xl shadow-slate-200/50">
+                        <img src={post.image_url} alt="" className="w-full h-auto object-cover max-h-96 group-hover:scale-105 transition-transform duration-700" />
                       </div>
                     )}
                   </div>
                 </article>
               ))}
             </div>
-          )}
-        </main>
+          </section>
+        </div>
 
-        {/* ==========================================
-            [하단 프로필 영역] 
-            💡 핵심: 글을 다 읽은 후 마지막에 나타나는 명함 스타일
-            ========================================== */}
-        <footer className="mt-40 pt-20 border-t border-slate-200">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-8">
-            <div className="flex items-center space-x-6">
-              <div className="w-16 h-16 bg-slate-900 text-white rounded-[20px] flex items-center justify-center text-2xl font-black shadow-xl shadow-slate-900/20">
-                재
-              </div>
-              <div>
-                <h3 className="text-xl font-black text-slate-900 tracking-tight">재욱</h3>
-                <p className="text-xs font-bold text-slate-400 mt-1 uppercase tracking-widest">AI-Native Creator</p>
-              </div>
-            </div>
-            
-            <div className="flex flex-col space-y-3">
-              <p className="text-[10px] font-black text-slate-300 tracking-[0.3em] uppercase">Connect</p>
-              <a href="#" className="text-sm font-bold text-slate-500 hover:text-blue-600 transition-colors inline-flex items-center">
-                Github <span className="ml-1 text-[10px]">↗</span>
-              </a>
-            </div>
+        {/* 4. 명함형 푸터 */}
+        <footer className="mt-40 pt-20 border-t border-slate-200 flex flex-col items-center text-center space-y-8">
+          <div className="w-16 h-16 bg-slate-900 text-white rounded-2xl flex items-center justify-center text-2xl font-black">재</div>
+          <div>
+            <h3 className="text-xl font-black text-slate-900">재욱</h3>
+            <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">Archive Curator</p>
           </div>
-          <p className="mt-20 text-center text-[10px] font-bold text-slate-300 uppercase tracking-[0.5em]">
-            © 2026 SIMLOG Archive
-          </p>
         </footer>
-
       </div>
-
-      {/* 우측 하단 고정 글쓰기 버튼 */}
-      <Link href="/write" className="fixed bottom-10 right-10 w-14 h-14 bg-slate-900 text-white rounded-full flex items-center justify-center text-3xl font-light shadow-2xl hover:bg-blue-600 hover:scale-110 active:scale-95 transition-all z-50">
-        +
-      </Link>
     </div>
   );
 }
