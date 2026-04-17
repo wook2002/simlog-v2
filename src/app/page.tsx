@@ -1,83 +1,72 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
-import Link from "next/link";
 
-export default function LandingPage() {
-  const [latestPost, setLatestPost] = useState<any>(null);
+export default function MinimalLandingPage() {
+  const [posts, setPosts] = useState<any[]>([]);
 
   useEffect(() => {
-    // 가장 최신 글 딱 하나만 가져오기
-    const fetchLatest = async () => {
+    const fetchPosts = async () => {
       const { data } = await supabase
         .from("posts")
         .select("*")
         .order("created_at", { ascending: false })
-        .limit(1)
-        .single();
-      if (data) setLatestPost(data);
+        .limit(5); // 최근 글 5개만 깔끔하게 노출
+      if (data) setPosts(data);
     };
-    fetchLatest();
+    fetchPosts();
   }, []);
 
   return (
-    <div className="max-w-4xl mx-auto px-6 py-20 space-y-24">
+    // max-w-2xl로 폭을 좁혀서 시선을 텍스트에 완전히 집중시킵니다.
+    <div className="max-w-2xl mx-auto px-6 py-24 sm:py-32 antialiased">
       
-      {/* Section 1: Hero (압도적인 타이틀과 소개) */}
-      <section className="space-y-8">
-        <div className="space-y-2">
-          <h1 className="text-8xl md:text-[12rem] font-black tracking-tighter italic leading-none text-slate-900">
-            SIMLOG<span className="text-blue-600">.</span>
-          </h1>
-          <p className="text-lg md:text-2xl font-bold text-slate-400 max-w-lg leading-tight uppercase tracking-tighter">
-            Archive of my moments, <br/>captured with AI.
-          </p>
-        </div>
+      {/* 초-심플 헤더 */}
+      <header className="mb-16 space-y-4">
+        <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
+          재욱 (Jaeuk)
+        </h1>
+        <p className="text-slate-600 leading-relaxed">
+          AI-Native 블로그 <span className="font-semibold text-slate-900">SIMLOG</span>를 만들고 있습니다. <br/>
+          순간의 생각과 이미지들을 이곳에 단순하게 기록합니다.
+        </p>
         
-        {/* 이동 버튼을 더 힙하게 변경 */}
-        <Link 
-          href="/log" 
-          className="inline-flex items-center space-x-4 group"
-        >
-          <div className="bg-black text-white px-8 py-4 rounded-full font-black text-xl group-hover:bg-blue-600 transition-all shadow-xl">
-            ENTER THE LOG ➔
-          </div>
-        </Link>
-      </section>
+        <div className="pt-4 flex space-x-4 text-sm font-medium text-slate-500">
+          <a href="#" className="hover:text-slate-900 transition-colors">Github</a>
+          <a href="#" className="hover:text-slate-900 transition-colors">Twitter</a>
+        </div>
+      </header>
 
-      {/* Section 2: Featured (최신 글 맛보기) */}
-      {latestPost && (
-        <section className="space-y-6 pt-10 border-t-4 border-slate-900">
-          <div className="flex justify-between items-end">
-            <h2 className="text-xs font-black uppercase tracking-[0.3em] text-slate-400">Featured Moment</h2>
-            <Link href="/log" className="text-xs font-black uppercase border-b-2 border-black pb-1">View All</Link>
-          </div>
-          
-          <Link href="/log" className="group block space-y-6">
-            <div className="aspect-[16/9] w-full rounded-3xl overflow-hidden bg-slate-100 shadow-2xl">
-              <img 
-                src={latestPost.image_url} 
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
-                alt="Latest"
-              />
-            </div>
-            <div className="space-y-2">
-              <h3 className="text-4xl md:text-6xl font-black tracking-tighter leading-none group-hover:text-blue-600 transition-colors">
-                {latestPost.title}
-              </h3>
-              <p className="text-xl text-slate-500 font-medium line-clamp-2 max-w-2xl">
-                {latestPost.description}
-              </p>
-            </div>
+      {/* 초-심플 최근 글 리스트 */}
+      <main>
+        <div className="flex items-center justify-between mb-8">
+          <h2 className="text-sm font-semibold text-slate-900">Recent logs</h2>
+          <Link href="/log" className="text-sm text-slate-500 hover:text-slate-900 transition-colors">
+            View all ➔
           </Link>
-        </section>
-      )}
+        </div>
 
-      {/* Section 3: Simple Footer */}
-      <footer className="pt-20 text-xs font-bold text-slate-300 uppercase tracking-widest text-center">
-        © 2026 Simlog. Built with Passion.
-      </footer>
+        <div className="space-y-6">
+          {posts.map((post) => (
+            <Link key={post.id} href="/log" className="group flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 sm:gap-4">
+              {/* 제목 */}
+              <h3 className="text-slate-900 font-medium group-hover:underline underline-offset-4 decoration-slate-300">
+                {post.title}
+              </h3>
+              {/* 날짜 (흐릿하게) */}
+              <time className="text-sm text-slate-400 shrink-0 tabular-nums">
+                {post.date}
+              </time>
+            </Link>
+          ))}
+          {posts.length === 0 && (
+            <p className="text-sm text-slate-400">아직 작성된 로그가 없습니다.</p>
+          )}
+        </div>
+      </main>
+
     </div>
   );
 }
