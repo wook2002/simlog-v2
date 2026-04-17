@@ -29,33 +29,31 @@ export default function HomePage() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto py-10 px-6 pb-24">
-      {/* 간격(gap)도 md:gap-20으로 팍 늘려서 숨통을 트여줍니다 */}
-      <div className="flex flex-col md:grid md:grid-cols-3 gap-10 md:gap-20">
+    // 1. 너비를 max-w-7xl(약 1280px)로 확 늘리고, 양옆 여백을 헤더와 맞춤
+    <div className="max-w-7xl mx-auto py-10 px-6 md:px-12 pb-24">
+      
+      {/* 2. PC(lg 기준)에서 4칸으로 나누고 간격을 시원하게 벌림 */}
+      <div className="flex flex-col lg:grid lg:grid-cols-4 gap-12 lg:gap-20">
         
         {/* ==========================================
-            [오른쪽 영역] 프로필
-            💡 핵심 변경점: 모바일에선 가로 정렬(flex-row), PC에선 세로 정렬(md:flex-col)
+            [오른쪽 영역] 프로필 (1칸 차지)
             ========================================== */}
-        <aside className="md:col-span-1 order-1 md:order-2">
+        <aside className="lg:col-span-1 order-1 lg:order-2">
           <div className="sticky top-10">
-            {/* 가로/세로 반응형 프로필 박스 */}
-            <div className="flex flex-row md:flex-col items-center md:items-start gap-4 md:gap-6 border-b-2 border-slate-50 md:border-none pb-6 md:pb-0">
-              <div className="w-14 h-14 md:w-16 md:h-16 bg-slate-900 text-white rounded-2xl flex items-center justify-center text-xl md:text-2xl font-black shadow-md shrink-0">
+            <div className="flex flex-row lg:flex-col items-center lg:items-start gap-4 lg:gap-6 border-b-2 border-slate-50 lg:border-none pb-6 lg:pb-0">
+              <div className="w-14 h-14 lg:w-16 lg:h-16 bg-slate-900 text-white rounded-2xl flex items-center justify-center text-xl lg:text-2xl font-black shadow-md shrink-0">
                 재
               </div>
               <div>
-                <h3 className="text-lg md:text-xl font-black text-slate-900">재욱</h3>
-                <p className="text-xs md:text-sm font-medium text-slate-500 mt-0.5">AI-Native 블로그</p>
-                {/* 모바일용 링크 (작게) */}
-                <div className="md:hidden mt-1">
+                <h3 className="text-lg lg:text-xl font-black text-slate-900">재욱</h3>
+                <p className="text-xs lg:text-sm font-medium text-slate-500 mt-0.5">AI-Native 블로그</p>
+                <div className="lg:hidden mt-1">
                   <a href="#" className="text-xs font-bold text-slate-400 hover:text-black">Github ↗</a>
                 </div>
               </div>
             </div>
 
-            {/* PC 전용 링크 (모바일에선 숨김) */}
-            <div className="hidden md:block space-y-2 pt-6 mt-6 border-t-2 border-slate-50">
+            <div className="hidden lg:block space-y-2 pt-6 mt-6 border-t-2 border-slate-50">
               <p className="text-xs font-bold text-slate-400 tracking-widest uppercase">Links</p>
               <a href="#" className="block text-sm font-bold text-slate-600 hover:text-black transition-colors">Github ↗</a>
             </div>
@@ -63,11 +61,10 @@ export default function HomePage() {
         </aside>
 
         {/* ==========================================
-            [왼쪽 영역] 게시물 목록 
+            [왼쪽 영역] 게시물 목록 (3칸 차지 - 압도적 넓이!)
             ========================================== */}
-        <div className="md:col-span-2 order-2 md:order-1 pt-2 md:pt-0">
+        <div className="lg:col-span-3 order-2 lg:order-1 pt-2 lg:pt-0">
           
-          {/* 💡 LATEST MOMENTS 디자인 다듬기 */}
           <div className="mb-8 pb-4 border-b-2 border-slate-100 flex justify-between items-end">
             <h2 className="text-sm font-black text-slate-900 tracking-widest uppercase">
               Latest Moments
@@ -84,7 +81,7 @@ export default function HomePage() {
               아직 기록된 모먼트가 없습니다. 첫 기록을 남겨보세요! 🍃
             </div>
           ) : (
-             <div className="space-y-16">
+             <div className="space-y-20"> {/* 글 사이 간격도 더 시원하게 */}
               {posts.map((post) => (
                 <article key={post.id} className="space-y-4 group">
                   <div className="flex items-center space-x-3 text-xs font-bold uppercase tracking-widest text-slate-400">
@@ -97,16 +94,16 @@ export default function HomePage() {
                     {post.title}
                   </h2>
                   
-                  <p className="text-slate-600 font-medium whitespace-pre-wrap leading-relaxed">
+                  <p className="text-slate-600 font-medium whitespace-pre-wrap leading-relaxed max-w-4xl">
                     {post.description}
                   </p>
                   
                   {post.image_url && (
-                    <div className="w-full mt-4 rounded-2xl overflow-hidden bg-slate-100 border border-slate-100">
+                    <div className="w-full mt-6 rounded-3xl overflow-hidden bg-slate-100 border border-slate-100 shadow-sm">
                       <img 
                         src={post.image_url} 
                         alt={post.title} 
-                        className="w-full h-auto object-cover max-h-[500px]" 
+                        className="w-full h-auto object-cover max-h-[600px] hover:scale-105 transition-transform duration-700" 
                       />
                     </div>
                   )}
