@@ -33,7 +33,7 @@ export default function HomeDashboard() {
           </h1>
           <p className="text-slate-500 font-medium leading-relaxed">
             블로그?  !@#$%&* 만듦 만듦<br />
-            테스트 ㈜ ☎ ㏂ abc 테스트 하는 1336 중 따라라
+            테스트 ㈜ ☎ ㏂ abc 테스트 하는 1336 중 딹可娥
           </p>
         </header>
 
